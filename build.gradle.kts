@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "let.xiaochen"
-version = "1.0-SNAPSHOT"
+version = "2.0-SNAPSHOT"
 
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
