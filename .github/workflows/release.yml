@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  workflow_run:                    # 关键：监听 CI 工作流
+    workflows: ["Java CI with Gradle"]  # 与 CI 文件里 `name` 保持一致
+    types:
+      - completed
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # 仅 CI 成功才执行
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write              # 创建 release 需要写权限
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 下载工件
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: trapdoorfix-jar      # 与 CI 里上传的 name 完全一致
+          path: ./artifact           # 本地目录
+
+      # 可选：打印文件列表
+      - name: List files
+        run: ls -l ./artifact
+
+      # 创建 Release 并上传 jar
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2.0.${{ github.run_number }}   # 以 run_number 作为版本号
+          name: "Auto Release v2.0.${{ github.run_number }}"
+          files: ./artifact/*.jar
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
