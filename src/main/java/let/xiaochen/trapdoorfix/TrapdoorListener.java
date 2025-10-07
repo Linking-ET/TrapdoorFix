@@ -50,7 +50,7 @@ public class TrapdoorListener implements Listener {
         Block above = block.getRelative(BlockFace.UP);
         if (above.getType() == Material.REDSTONE_WIRE) {
             TrapDoor trapdoor = (TrapDoor) block.getBlockData();
-            if (!trapdoor.isOpen() && event.getNewCurrent() > 0) {
+            if (!trapdoor.isOpen() || event.getNewCurrent() > 0) {
                 above.setType(Material.AIR);
                 block.getWorld().dropItemNaturally(block.getLocation(),
                         new ItemStack(Material.REDSTONE));
